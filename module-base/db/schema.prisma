@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = env("DATABASE_URL")
+// }
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+
+// --------------------------------------
+
+
+model Game {
+  id             Int      @id @default(autoincrement()) @map("_id")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  state          String
+  winner         String?
+}
+
+// model User {
+//   id             Int      @id @default(autoincrement())
+//   createdAt      DateTime @default(now())
+//   updatedAt      DateTime @updatedAt
+//   name           String?
+//   email          String   @unique
+//   hashedPassword String?
+//   role           String   @default("USER")
+
+//   tokens   Token[]
+//   sessions Session[]
+// }

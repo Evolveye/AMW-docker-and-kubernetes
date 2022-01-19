@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: toor
+
+  module-base:
+    image: module-base:0.0.1
+    ports:
+      - "25602:25600"
+    environment:
+      - OWNER_SERVICE_URL=http://localhost:25600/
+      - MONGO_URL=mongodb://root:toor@mongo:27017/docker-and-k8s?authSource=admin
+      - CHAT_URL=ws://module-chat:25601/
+
+  module-chat:
+    image: module-chat:0.0.1
+    ports:
+      - "25601:25601"
