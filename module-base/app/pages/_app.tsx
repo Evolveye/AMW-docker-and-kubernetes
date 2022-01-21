@@ -7,21 +7,23 @@ import {
   ErrorFallbackProps,
   useQueryErrorResetBoundary,
 } from "blitz"
+import "app/core/styles/normalize.css"
+import "app/core/styles/main.css"
 
-export default function App({ Component, pageProps }: AppProps) {
-  const getLayout = Component.getLayout || ((page) => page)
+export default function App({ Component, pageProps }:AppProps) {
+  const getLayout = Component.getLayout || (page => page)
 
   return (
     <ErrorBoundary
       FallbackComponent={RootErrorFallback}
       onReset={useQueryErrorResetBoundary().reset}
     >
-      {getLayout(<Component {...pageProps} />)}
+      {getLayout( <Component {...pageProps} /> )}
     </ErrorBoundary>
   )
 }
 
-function RootErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
+function RootErrorFallback({ error, resetErrorBoundary }:ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
     return <>Error</> // <LoginForm onSuccess={resetErrorBoundary} />
   } else if (error instanceof AuthorizationError) {

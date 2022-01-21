@@ -13,5 +13,8 @@
   "dependencies": {
     "dotenv": "^14.2.0",
     "ws": "^8.4.2"
+  },
+  "devDependencies": {
+    "eslint-config-eye": "^1.2.5"
   }
 }

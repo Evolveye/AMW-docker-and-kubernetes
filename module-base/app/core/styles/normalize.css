@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+}
