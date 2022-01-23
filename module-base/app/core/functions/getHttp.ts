@@ -1,3 +1,5 @@
+import getWindow from "./getWindow"
+
 export type Method = "POST" | "GET" | "PUT" | "DELETE" | "OPTIONS"
 export type FetchInit = {
   method: Method
@@ -6,6 +8,13 @@ export type FetchInit = {
 }
 
 const filterObject = obj => Object.fromEntries( Object.entries( obj ).filter( ([ , v ]) => Boolean( v ) ) )
+const generateQueriedUrl = (url, obj) => {
+  if (!obj) return url
+
+  const searchStr = Object.entries( filterObject( obj ) ).reduce( (str, [ k, v ]) => `${str}&${k}=${v}`, `` )
+
+  return `${url}?${searchStr}`
+}
 
 const abstractFetch = (uri:string, init:FetchInit) => fetch( uri, init ).then( async res => {
   const contentType = res.headers.get( `content-type` )
@@ -19,19 +28,17 @@ const abstractFetch = (uri:string, init:FetchInit) => fetch( uri, init ).then( a
     }
   }
 
-  return res.text()
+  return resText
 } )
 
 const post = (uri:string, data:Record<string, unknown> = {}) => abstractFetch( uri, { method:`POST`, body:JSON.stringify( filterObject( data ) ), headers:{ "content-type":`application/json` } } )
-const get = (uri:string, searchObj:Record<string, string | number | null | undefined>) => {
-  if (!searchObj) return abstractFetch( uri, { method:`GET` } )
+const get = (uri:string, searchObj:Record<string, string | number | null | undefined>) => abstractFetch( generateQueriedUrl( uri, searchObj ), { method:`GET` } )
+const del = (uri:string, searchObj:Record<string, string | number | null | undefined>) => abstractFetch( generateQueriedUrl( uri, searchObj ), { method:`DELETE` } )
 
-  const searchStr = Object.entries( filterObject( searchObj ) ).reduce( (str, [ k, v ]) => `${str}&${k}=${v}`, `` )
+const http = { post, get, delete:del }
+const window = getWindow()
 
-  return abstractFetch( `${uri}?${searchStr}`, { method:`GET` } )
-}
-
-const http = { post, get }
+if (window) (window as unknown as Window & {http: typeof http}).http = http
 
 export default http
 

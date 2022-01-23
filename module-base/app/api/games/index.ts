@@ -17,6 +17,7 @@ export type NewGame = {
 export default async function games( req:BlitzApiRequest, res:BlitzApiResponse ) {
   if (req.method === `POST`) return onPost( req, res )
   if (req.method === `GET`) return onGet( req, res )
+  if (req.method === `DELETE`) return onDelete( req, res )
 }
 
 async function onPost( req:BlitzApiRequest, res:BlitzApiResponse ) {
@@ -63,4 +64,10 @@ async function onGet( req:BlitzApiRequest, res:BlitzApiResponse ) {
   }
 
   res.json({ state:`success`, games })
+}
+
+async function onDelete( req:BlitzApiRequest, res:BlitzApiResponse ) {
+  const games = await db.game.deleteMany({ where:{ circle:null, cross:null, state:{ not:`finished` } } })
+
+  res.json({ state:`success`, count:games.count })
 }

@@ -26,9 +26,7 @@ export default function useWS( url:string, events:Events ) {
   } ), [] )
 
 
-  useEffect( () => () => {
-    if (ws) Object.keys( events ).forEach( ws.rmListener )
-  }, [] )
+  useEffect( () => () => ws?.disconnect(), [] )
 
 
   return ws

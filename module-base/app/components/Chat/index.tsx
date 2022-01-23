@@ -12,7 +12,7 @@ export type ChatProps = {
 
 const Message = ({ data }) => (
   <li>
-    {data.random}: {data.content}
+    <b>{data.shape === `circle` ? `kółko` : `krzyżyk`}</b>: {data.content}
   </li>
 )
 

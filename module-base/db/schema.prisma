@@ -36,10 +36,12 @@ model Game {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  uuid           String
+  uuid           String   @unique
   type           String
   state          String
   winner         String?
+  circle         String?
+  cross          String?
 }
 
 // model User {

@@ -7,7 +7,7 @@ import classes from "./game.module.css"
 const GameWithPersonPage:BlitzPage = () => {
   const gameId = useParam( `id` ) as string
 
-  return (
+  return !gameId ? null : (
     <main className={classes.page}>
       <Chat className={classes.chat} />
       <TicTacToe className={classes.ticTacToe} gameId={gameId} />

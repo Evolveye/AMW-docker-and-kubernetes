@@ -11,31 +11,82 @@ const wss = new WebSocketServer({
 
 wss.on( `listening`, () => console.log( `Server running on "ws://localhost:${env.PORT}"` ) )
 wss.on( `connection`, ws => {
-  const send = (event, data) => ws.send( JSON.stringify({ event, data }) )
+  const emit = (event, data) => ws.send( JSON.stringify({ event, data }) )
   const wsData = {
-    random: `${Math.random()}`.slice( 2, 6 ),
+    id: `${Math.random()}`.slice( 2, 12 ),
+    gameId: null,
+    shape: null,
   }
 
-  ws.on( `message`, rawPayload => {
+  console.log( `Socket ${wsData.id} joined.\n` )
+
+  ws.on( `close`, async() => {
+    const game = await prisma.game.update({ where:{ uuid:wsData.gameId }, data:{ [ wsData.shape ]:null } }).catch( () => null )
+    const shouldDelete = game && !game.cross && !game.circle && game.state !== `finished`
+
+    console.log( `Socket ${wsData.id} left.`, shouldDelete ? `Game "${wsData.gameId}" deleted` : ``, `\n` )
+
+    if (shouldDelete) await prisma.game.delete({ where:{ uuid:wsData.gameId } })
+  } )
+
+  ws.on( `message`, async rawPayload => {
     const payload = JSON.parse( rawPayload.toString() )
 
     if (typeof payload !== `object`) return
     if (!(`event` in payload)) return
 
-    console.log( `New payload from ${wsData.random}:\n`, payload )
+    console.log( `New payload from ${wsData.id}:\n`, payload )
 
     switch (payload.event) {
-      case `join`: {
+      case `join to the game`: {
+        const gameId = payload.data
+
+        if (!gameId) {
+          wsData.shape = Math.random() > 0.5 ? `circle` : `cross`
+          console.log( `No game ID, starting game with PC` )
+          console.log( `Drawn socket shape is a ${wsData.shape} now` )
+        } else {
+          const game = await prisma.game.findFirst({ where:{ uuid:gameId } })
+
+          if (!game) {
+            console.log( `Game not found` )
+            return emit( `joined to the game`, { gameId:null, shape:null } )
+          }
+
+          if (game.circle) {
+            if (game.cross) {
+              console.log( `Game is full` )
+            } else {
+              console.log( `Socket is a cross now` )
+              wsData.shape = `cross`
+            }
+          } else {
+            if (game.cross) {
+              console.log( `Socket is a circle now` )
+              wsData.shape = `circle`
+            } else {
+              wsData.shape = Math.random() > 0.5 ? `circle` : `cross`
+              console.log( `Drawn socket shape is a ${wsData.shape} now` )
+            }
+          }
+
+          if (gameId && wsData.shape) {
+            wsData.gameId = gameId
+            prisma.game.update({ where:{ uuid:gameId }, data:{ [ wsData.shape ]:wsData.id } })
+          }
+        }
+
+        emit( `joined to the game`, { gameId, shape:wsData.shape } )
         break
       }
 
       case `message`: {
         const retData = {
-          random: wsData.random,
+          shape: wsData.shape,
           content: payload.data,
         }
 
-        send( `message`, retData )
+        emit( `message`, retData )
         break
       }
 
