@@ -11,10 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^3.8.1",
     "dotenv": "^14.2.0",
     "ws": "^8.4.2"
   },
   "devDependencies": {
-    "eslint-config-eye": "^1.2.5"
+    "eslint-config-eye": "^1.2.5",
+    "prisma": "^3.8.1"
   }
 }

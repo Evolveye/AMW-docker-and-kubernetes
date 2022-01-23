@@ -1,7 +1,6 @@
-import { KeyboardEvent, useEffect, useMemo, useState } from "react"
+import { KeyboardEvent } from "react"
 import useWS from "app/core/hooks/useWS"
 import { useStaeArray } from "app/core/hooks/useStateArray"
-import getWindow from "app/core/functions/getWindow"
 import { cn } from "app/core/functions/createClassName"
 import classes from "./.module.css"
 
@@ -20,10 +19,9 @@ const Message = ({ data }) => (
 export default function Chat({ className }:ChatProps) {
   const [ messages, messagesActions ] = useStaeArray()
   const ws = useWS( WS_URL, {
-    onMessage: msg => messagesActions.push( msg ),
+    message: msg => messagesActions.push( msg ),
   } )
 
-  const sendMessage = data => ws?.send( JSON.stringify( data ) )
   const onKeyDown = (e:KeyboardEvent<HTMLInputElement>) => {
     if (e.code !== `Enter`) return
 
@@ -32,7 +30,7 @@ export default function Chat({ className }:ChatProps) {
 
     const input = e.target as HTMLInputElement
 
-    sendMessage( input.value )
+    ws?.emit( `message`, input.value )
 
     input.value = ``
   }

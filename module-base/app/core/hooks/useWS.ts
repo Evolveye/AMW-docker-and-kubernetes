@@ -1,36 +1,34 @@
 import { useEffect, useMemo, useState } from "react"
-import getWindow from "../functions/getWindow"
+import getWs, { Events } from "../functions/getWs"
 
-export type UseWsConfig = {
-  onMessage: (data) => void
-}
+export default function useWS( url:string, events:Events ) {
+  const [ , setReadyState ] = useState( 0 )
+  const ws = useMemo( () => getWs( url, {
+    ...events,
+    onConnect( arg ) {
+      setTimeout( () => {
+        setReadyState( ws!.readyState )
+        events.onConnect?.( arg )
+      }, 0 )
+    },
+    onError( arg ) {
+      setTimeout( () => {
+        setReadyState( ws!.readyState )
+        events.onConnect?.( arg )
+      }, 0 )
+    },
+    onDisconnect( arg ) {
+      setTimeout( () => {
+        setReadyState( ws!.readyState )
+        events.onConnect?.( arg )
+      }, 0 )
+    },
+  } ), [] )
 
-export default function useWS( url:string, { onMessage }:UseWsConfig ) {
-  const ws = useMemo( () => {
-    const window = getWindow()
 
-    if (!window) return null
-
-    const ws = new window.WebSocket( url )
-
-    if (onMessage) ws.onmessage = ({ data }) => onMessage( JSON.parse( data ) )
-
-    return ws
+  useEffect( () => () => {
+    if (ws) Object.keys( events ).forEach( ws.rmListener )
   }, [] )
-
-
-  const [ , setReadyState ] = useState( ws?.readyState ?? 0 )
-
-
-  useEffect( () => {
-    if (!ws) return
-
-    const updateReadyState = () => setReadyState( ws.readyState )
-
-    ws.onopen = () => updateReadyState()
-    ws.onerror = () => updateReadyState()
-    ws.onclose = () => updateReadyState()
-  }, [ ws ] )
 
 
   return ws
