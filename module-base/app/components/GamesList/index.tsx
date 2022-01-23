@@ -1,5 +1,6 @@
 import useFetch from "app/core/hooks/useFetch"
 import getDate from "app/core/functions/getDate"
+import { cn } from "app/core/functions/createClassName"
 import classes from "./.module.css"
 
 export type GamesListProps = {
@@ -25,7 +26,7 @@ export default function GamesList({ className, state, type }:GamesListProps) {
   const gamesList:GameFetchRes | null = useFetch( `GET`, `/api/games`, { state, type } )
 
   return gamesList === null ? <article className={className} /> : (
-    <article className={className}>
+    <article className={cn( classes.gamesList, className )}>
       <h3 className={classes.title}>Lista gier</h3>
 
       <div>

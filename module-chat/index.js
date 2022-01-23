@@ -9,10 +9,21 @@ const wss = new WebSocketServer({
 
 wss.on( `listening`, () => console.log( `Server running on "ws://localhost:${env.PORT}"` ) )
 wss.on( `connection`, ws => {
-  ws.on( `message`, data => {
-    const json = data.toString()
-    console.log( `Received data:`, json )
+  const wsData = {
+    random: `${Math.random()}`.slice( 2, 6 ),
+  }
 
-    ws.send( JSON.stringify( `pong` ) )
+  ws.on( `message`, data => {
+    const receivedData = data.toString()
+    const message = typeof receivedData === `string` ? receivedData.slice( 1, -1 ) : receivedData
+
+    console.log( `${wsData.random} send message: ${message}` )
+
+    const retData = {
+      random: wsData.random,
+      content: message,
+    }
+
+    ws.send( JSON.stringify( retData ) )
   } )
 } )

@@ -1,4 +1,24 @@
+.chat {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
 .title {
   color: #ccc;
   font-size: 20px;
+}
+
+.mesages {
+  flex: 1;
+}
+
+.inputArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputHint {
+  text-align: center;
+  color: #ccc;
 }
