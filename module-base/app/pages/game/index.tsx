@@ -1,37 +1,17 @@
-import getWindow from "app/core/functions/getWindow";
-import { BlitzPage } from "blitz";
-import { useEffect, useMemo } from "react";
+import { BlitzPage } from "blitz"
+import TicTacToe from "app/components/TicTacToe"
+import GamesList from "app/components/GamesList"
+import Chat from "app/components/Chat"
+import classes from "./game.module.css"
 
-const WS_URL = process.env.CHAT_URL
-
-const GamePage:BlitzPage = () => {
-  const ws = useMemo( () => createWS(), [])
-  const send = data => ws?.send( JSON.stringify( data ) )
-
-  useEffect( ()=>{
-    fetch( `/api/games/finished` ).then( r => r.json() ).then( console.log )
-  }, [] )
-
+const GameWithPcPage:BlitzPage = () => {
   return (
-    <main>
-      Game page
-      <br/>
-      <button onClick={() => send(`ping`)}>Ping to console</button>
+    <main className={classes.page}>
+      <Chat className={classes.chat} />
+      <TicTacToe className={classes.ticTacToe} />
+      <GamesList className={classes.gamesList} state="finished" />
     </main>
   )
 }
 
-export default GamePage
-
-function createWS() {
-  const window = getWindow()
-
-  if (!window) return null
-  if (typeof WS_URL !== `string`) throw `WS url should by a string`
-
-  const ws = new window.WebSocket( WS_URL )
-
-  ws.onmessage = ({ data }) => console.log( JSON.parse( data ) )
-
-  return ws
-}
+export default GameWithPcPage

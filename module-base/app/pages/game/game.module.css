@@ -1,0 +1,12 @@
+.page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.chat, .gamesList {
+  width: 300px;
+}
+
+.ticTacToe {
+  flex: 1;
+}

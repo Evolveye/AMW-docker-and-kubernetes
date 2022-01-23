@@ -1,0 +1,14 @@
+.title {
+  color: #ccc;
+  font-size: 20px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  margin: 10px
+}
+
+.time {
+  color: #ccc;
+}

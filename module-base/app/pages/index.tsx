@@ -1,28 +1,24 @@
-import { BlitzPage, Link } from "blitz"
+import { BlitzPage } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import { useEffect } from "react"
+import GamesList from "app/components/GamesList"
+import GameModesChooser from "app/components/GameModesChooser"
+import AuthorNews from "app/components/AuthorNews"
+import classes from "./index.module.css"
 
-/*
- * This file is just for a pleasant getting started page for your new app.
- * You can delete everything in here and start from scratch if you like.
- */
-
-
-const Home: BlitzPage = () => {
-  useEffect( ()=>{
-    fetch( `/api/news` ).then( r => r.json() ).then( console.log )
-  }, [] )
-
+const Home:BlitzPage = () => {
   return (
-    <main>
-      Hello lab.
-      <br />
-      <Link href={"/game"}>Game page</Link>
-    </main>
+    <div className={classes.page}>
+      <main className={classes.main}>
+        <GameModesChooser className={classes.gameModesChooser} />
+        <GamesList className={classes.gamesList} state="active" type="random" />
+      </main>
+
+      <AuthorNews className={classes.authorNews} />
+    </div>
   )
 }
 
 Home.suppressFirstRenderFlicker = true
-Home.getLayout = (page) => <Layout title="Home">{page}</Layout>
+Home.getLayout = page => <Layout title="Home">{page}</Layout>
 
 export default Home

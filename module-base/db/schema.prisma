@@ -9,14 +9,22 @@
 // generator client {
 //   provider = "prisma-client-js"
 // }
+// datasource db {
+//   provider = "mongodb"
+//   url      = env("MONGO_URL")
+// }
+
+// generator client {
+//   provider = "prisma-client-js"
+//   previewFeatures = ["mongoDb"]
+// }
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGO_URL")
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["mongoDb"]
 }
 
 
@@ -27,6 +35,9 @@ model Game {
   id             Int      @id @default(autoincrement()) @map("_id")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  uuid           String
+  type           String
   state          String
   winner         String?
 }

@@ -1,0 +1,18 @@
+.gameModesChooser {
+  justify-content: center;
+}
+
+.item {
+  background-color: #fff1;
+  width: 150px;
+  height: 150px;
+  margin: 10px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.item:hover {
+  transform: scale( 1.05 );
+  background-color: #fff2;
+  box-shadow: 0 0 30px #0005;
+}

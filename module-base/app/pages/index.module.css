@@ -1,0 +1,27 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+}
+
+.gameModesChooser {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.gamesList {
+  width: 300px;
+}
+
+.authorNews {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}

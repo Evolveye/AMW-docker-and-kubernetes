@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import http, { Method } from "../functions/getFetch"
+import http, { Method } from "../functions/getHttp"
 
-export default function useFetch( method:Method, uri:string, data:Record<string, string | number> ) {
-  const [ response, setResponse ] = useState<null | Response>( null )
+export default function useFetch<T>( method:Method, uri:string, data:Record<string, string | number | undefined | null> = {} ) {
+  const [ response, setResponse ] = useState<null | T>( null )
 
   useEffect( () => {
     const pendingRequest = (() => {
@@ -12,7 +12,7 @@ export default function useFetch( method:Method, uri:string, data:Record<string,
       }
     })()
 
-    pendingRequest.then( setResponse )
+    pendingRequest?.then( setResponse )
   }, [] )
 
   return response

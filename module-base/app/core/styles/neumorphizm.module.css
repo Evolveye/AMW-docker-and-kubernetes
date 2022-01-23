@@ -1,0 +1,31 @@
+.neumorphizm {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 5px 10px;
+  box-shadow:
+    -2px -2px 2px #fff,
+     2px  2px 2px #0005,
+    -2px -2px 3px #eee inset,
+     2px  2px 3px #fff inset;
+}
+.neumorphizm.isButton:focus {
+  outline: none;
+}
+.neumorphizm.isButton {
+  transform: scale( 1 );
+  transition: all .2s;
+}
+.neumorphizm.isButton:hover {
+  box-shadow: 0 4px 10px 0px #0005;
+  transform: scale( 1.1 );
+}
+.neumorphizm.isButton:active,
+.neumorphizm.isButton.is-active {
+  box-shadow:
+    -2px -2px 3px #eee,
+     2px  2px 3px #fff,
+    -2px -2px 2px #fff inset,
+     2px  2px 2px #0005 inset;
+  transform: scale( 0.9 );
+}

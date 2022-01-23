@@ -39,3 +39,4 @@ function RootErrorFallback({ error, resetErrorBoundary }:ErrorFallbackProps) {
     )
   }
 }
+
