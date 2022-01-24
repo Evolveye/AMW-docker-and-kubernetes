@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import useWS from "app/core/hooks/useWS"
 import redirect from "app/core/functions/redirect"
 import { cn } from "app/core/functions/createClassName"
+import Game from "./logic"
 import classes from "./.module.css"
 
 const WS_URL = process.env.CHAT_URL ?? ``
@@ -12,6 +13,7 @@ export type TicTacToeProps = {
 }
 
 export default function TicTacToe({ className, gameId }:TicTacToeProps) {
+  const gameRef = useRef<Game>()
   const [ shape, setShape ] = useState<"circle" | "cross" | null>(null)
   const ws = useWS( WS_URL, {
     "joined to the game"( payload ) {
@@ -21,8 +23,20 @@ export default function TicTacToe({ className, gameId }:TicTacToeProps) {
     },
   } )
 
+  const handleCanvas = (canvas:HTMLCanvasElement) => {
+    const intervalId = setInterval( () => {
+      if (!canvas || !shape) return
+
+      gameRef.current = new Game( canvas, shape )
+
+      clearInterval( intervalId )
+    }, 50 )
+  }
+
   useEffect( () => {
     ws?.emit( `join to the game`, gameId )
+
+    return () => gameRef.current?.destroy()
   }, [ gameId ] )
 
   return (
@@ -31,7 +45,8 @@ export default function TicTacToe({ className, gameId }:TicTacToeProps) {
         <span className={classes.shapeInfo}>
           Grasz jako <b className={classes.shape}>{!shape ? `...` : (shape === `circle` ? `kółko` : `krzyżyk`)}</b>
         </span>
-        <canvas className={classes.canvas} />
+
+        <canvas className={classes.canvas} ref={handleCanvas} />
       </div>
     </article>
   )
