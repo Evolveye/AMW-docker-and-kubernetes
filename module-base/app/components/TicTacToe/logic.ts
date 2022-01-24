@@ -2,10 +2,17 @@ export type EventCoords = {
   layerX: number
   layerY: number
 }
+export type Shape = "circle" | "cross"
 export class Tile {
-  shape: "circle" | "cross" | null = null
+  shape: Shape | null = null
 
   constructor( public x:number, public y:number ) {}
+}
+export type GameConfig = {
+  shape?: null | Shape
+  onTileGrab?: ((x:number, y:number) => void)
+  turn?: null | Shape
+  map?: null | string
 }
 
 export default class Game {
@@ -13,19 +20,25 @@ export default class Game {
   #data: Tile[][]
   #ctx: CanvasRenderingContext2D;
 
-  shape: "circle" | "cross" | null
+  turnOf: Shape | null
+  shape: Shape | null
   tileW: number
   tileH: number
   hoveredTile: Tile | null
+  onTileGrab: null | ((x:number, y:number) => void)
 
 
-  constructor( canvas:HTMLCanvasElement, shape:"circle" | "cross" | null = null ) {
+  constructor( canvas:HTMLCanvasElement, { shape, onTileGrab, map, turn }:GameConfig ) {
     this.#ctx = canvas.getContext( `2d` )!
     this.#data = Array.from( { length:3 }, (_, y) => Array.from( { length:3 }, (_, x) => new Tile( x, y ) ) )
 
-    this.shape = shape
+    this.turnOf = turn ?? null
+    this.shape = shape ?? null
     this.tileW = canvas.width / 3
     this.tileH = canvas.height / 3
+    this.onTileGrab = onTileGrab ?? null
+
+    if (map) this.setMap( map )
 
     this.addEvents()
     this.resize()
@@ -40,6 +53,7 @@ export default class Game {
       const { layerX, layerY } = e as unknown as EventCoords
       const tile = this.getTileFromPixels( layerX, layerY )
 
+      // console.log( this )
       this.hoveredTile = tile
     } )
 
@@ -152,12 +166,46 @@ export default class Game {
   }
 
 
+  setMap = (mapStr:string) => {
+    const mapChars = mapStr.split( `|` ).map( chars => chars.split( `` ) )
+
+    mapChars.forEach( (row, y) => row.forEach( (char, x) => {
+      const tile = this.#data[ y ]?.[ x ]
+
+      if (!tile) return
+
+      if (char === `O`) tile.shape = `circle`
+      else if (char === `X`) tile.shape = `cross`
+    } ) )
+  }
+
+
   createShape = () => {
     const tile = this.hoveredTile
 
     if (!tile || tile.shape) return
+    if (this.shape && this.turnOf !== this.shape) return
 
-    tile.shape = this.shape ?? (Math.random() > 0.5 ? `cross` : `circle`)
+    // tile.shape = this.shape ?? (Math.random() > 0.5 ? `cross` : `circle`)
+
+    this.onTileGrab?.( tile.x, tile.y )
+    this.setTurn( this.shape === `circle` ? `cross` : `circle` )
+  }
+
+
+  setTurn = (shape:Shape) => {
+    this.turnOf = shape
+  }
+
+
+  setTileShape = (x:number, y:number, shape?:Shape) => {
+    const tile = this.getTile( x, y )
+
+    if (!tile) return
+
+    const shapeOnTile = shape ?? this.turnOf
+
+    if (shapeOnTile) tile.shape = shapeOnTile
   }
 
 

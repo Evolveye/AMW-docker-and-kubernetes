@@ -35,7 +35,7 @@ export default function GamesList({ className, state, type }:GamesListProps) {
             <div key={g.id} className={classes.item}>
               <time className={classes.time}>{getDate( g.updatedAt )}</time>
               <span className={classes.winner}>
-                {g.state === `active` ? `Trwa...` : (g.winner ? `Zwycięzki kształt: ${g.winner}` : `Remis`)}
+                {g.state === `active` ? `Trwa...` : (g.winner ? `Zwycięzki kształt: ${g.winner === `circle` ? `kółko` : `krzyżyk`}` : `Remis`)}
               </span>
             </div>
           ) )

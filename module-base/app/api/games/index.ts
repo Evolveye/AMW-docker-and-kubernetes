@@ -12,6 +12,8 @@ export type NewGame = {
   type: typeof PostReqData._type.type
   state: "active"
   uuid: string
+  map: string
+  turn: string
 }
 
 export default async function games( req:BlitzApiRequest, res:BlitzApiResponse ) {
@@ -29,6 +31,8 @@ async function onPost( req:BlitzApiRequest, res:BlitzApiResponse ) {
     state: `active`,
     uuid: randomUUID(),
     type: postReqData.data.type,
+    map: `...|...|...`,
+    turn: `circle`,
   }
 
   const newGame = await db.game.create({ data:newGameData }).catch( () => null )
@@ -67,7 +71,12 @@ async function onGet( req:BlitzApiRequest, res:BlitzApiResponse ) {
 }
 
 async function onDelete( req:BlitzApiRequest, res:BlitzApiResponse ) {
-  const games = await db.game.deleteMany({ where:{ circle:null, cross:null, state:{ not:`finished` } } })
+  const force = `force` in req.query ? true : false
+  const games = await db.game.deleteMany({ where: {
+    circle: force ? undefined : null,
+    cross: force ? undefined : null,
+    state: force ? undefined : { not:`finished` },
+  } })
 
   res.json({ state:`success`, count:games.count })
 }

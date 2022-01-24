@@ -21,4 +21,6 @@ model Game {
   winner         String?
   circle         String?
   cross          String?
+  turn           String
+  map            String
 }
