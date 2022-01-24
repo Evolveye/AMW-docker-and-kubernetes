@@ -10,7 +10,7 @@ const Home:BlitzPage = () => {
     <div className={classes.page}>
       <main className={classes.main}>
         <GameModesChooser className={classes.gameModesChooser} />
-        <GamesList className={classes.gamesList} state="active" type="random" />
+        <GamesList className={classes.gamesList} type="random" />
       </main>
 
       <AuthorNews className={classes.authorNews} />

@@ -11,7 +11,7 @@ const GameWithPersonPage:BlitzPage = () => {
     <main className={classes.page}>
       <Chat className={classes.chat} />
       <TicTacToe className={classes.ticTacToe} gameId={gameId} />
-      <GamesList className={classes.gamesList} />
+      <GamesList className={classes.gamesList} type="random" state="finished" noJoin />
     </main>
   )
 }

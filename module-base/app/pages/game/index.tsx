@@ -9,7 +9,7 @@ const GameWithPcPage:BlitzPage = () => {
     <main className={classes.page}>
       <Chat className={classes.chat} />
       <TicTacToe className={classes.ticTacToe} />
-      <GamesList className={classes.gamesList} state="finished" />
+      <GamesList className={classes.gamesList} type="random" />
     </main>
   )
 }

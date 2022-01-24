@@ -14,13 +14,13 @@ export default function useWS( url:string, events:Events ) {
     onError( arg ) {
       setTimeout( () => {
         setReadyState( ws!.readyState )
-        events.onConnect?.( arg )
+        events.onError?.( arg )
       }, 0 )
     },
     onDisconnect( arg ) {
       setTimeout( () => {
         setReadyState( ws!.readyState )
-        events.onConnect?.( arg )
+        events.onDisconnect?.( arg )
       }, 0 )
     },
   } ), [] )

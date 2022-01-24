@@ -57,6 +57,7 @@ export default function getWs( url:string, events:Events ) {
       queuedEmits.forEach( p => partialWs.emit?.( p.event, p.data ) )
     } )
     partialWs.addEventListener!( `error`, () => wsStorage.get( url )?.events[ `onError` ]?.forEach( f => f( undefined ) ) )
+    // partialWs.addEventListener!( `error`, () => console.log( wsStorage.get( url )?.events[ `onError` ]?.[ 0 ] ) )
     partialWs.addEventListener!( `close`, () => wsStorage.get( url )?.events[ `onDisconnect` ]?.forEach( f => f( undefined ) ) )
     partialWs.addEventListener!( `message`, ({ data:rawPayload }) => {
       const events = wsStorage.get( url )?.events

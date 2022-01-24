@@ -4,6 +4,7 @@ import db from "db"
 import { BlitzApiRequest, BlitzApiResponse } from "blitz"
 
 const gameStates = [ `active`, `finished` ]
+const gameTypes = [ `pc`, `friend`, `random` ]
 const PostReqData = z.object({
   type: z.enum([ `friend`, `random` ]),
 })
@@ -52,10 +53,12 @@ async function onPost( req:BlitzApiRequest, res:BlitzApiResponse ) {
 
 async function onGet( req:BlitzApiRequest, res:BlitzApiResponse ) {
   const anyState = req.query.state as string
+  const anyType = req.query.type as string
 
   let state = gameStates.includes( anyState ) ? anyState : undefined
+  let type = gameTypes.includes( anyType ) ? anyType : undefined
 
-  const games = await db.game.findMany({ where:{ state } }).catch( () => null )
+  const games = await db.game.findMany({ where:{ state, type } }).catch( () => null )
 
   if (games === null) {
     const err = {

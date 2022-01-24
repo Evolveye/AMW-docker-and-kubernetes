@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import useWS from "app/core/hooks/useWS"
 import redirect from "app/core/functions/redirect"
 import { cn } from "app/core/functions/createClassName"
+import Link from "app/core/components/Link"
 import Game from "./logic"
 import classes from "./.module.css"
 
@@ -19,8 +20,14 @@ export type InitialData = {
 
 export default function TicTacToe({ className, gameId }:TicTacToeProps) {
   const gameRef = useRef<Game>()
+  const [ finished, setFinished ] = useState<boolean>( false )
+  const [ error, setError ] = useState<boolean>( false )
   const [ initialData, setInitialData ] = useState<InitialData | null>( null )
   const ws = useWS( WS_URL, {
+    "onError"() {
+      setError( true )
+    },
+
     "joined to the game"( payload ) {
       if (payload.gameId !== gameId) return redirect( `/` )
 
@@ -38,14 +45,19 @@ export default function TicTacToe({ className, gameId }:TicTacToeProps) {
       gameRef.current?.setTurn( newTurnOf )
     },
 
-    "end"( payload ) {
-      console.log( payload )
+    "end"() {
+      setFinished( true )
     },
   } )
 
   const handleCanvas = (canvas:HTMLCanvasElement) => {
     const intervalId = setInterval( () => {
       if (!canvas || !initialData) return
+
+      if (gameRef.current) {
+        return gameRef.current.replaceCanvas( canvas )
+      }
+
       const { shape, turn, map } = initialData
 
       gameRef.current = new Game( canvas, {
@@ -69,7 +81,13 @@ export default function TicTacToe({ className, gameId }:TicTacToeProps) {
     <article className={cn( classes.ticTacToe, className )}>
       <div className={classes.canvasColumn}>
         <span className={classes.shapeInfo}>
-          Grasz jako <b className={classes.shape}>{!initialData ? `...` : (initialData.shape === `circle` ? `kółko` : `krzyżyk`)}</b>
+          {
+            finished ? (
+              <>Gra zakończona. <Link to="/">Powrót do strony głównej</Link></>
+            ) : (
+              <>Grasz jako <b className={classes.shape}>{!initialData ? `...` : (initialData.shape === `circle` ? `kółko` : `krzyżyk`)}</b></>
+            )
+          }
         </span>
 
         <canvas className={classes.canvas} ref={handleCanvas} />

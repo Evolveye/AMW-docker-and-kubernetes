@@ -20,6 +20,7 @@ export default class Game {
   #data: Tile[][]
   #ctx: CanvasRenderingContext2D;
 
+  finished: boolean = false
   turnOf: Shape | null
   shape: Shape | null
   tileW: number
@@ -107,12 +108,12 @@ export default class Game {
   draw = () => {
     const ctx = this.#ctx
     const data = this.#data
-    const { tileH, tileW, hoveredTile } = this
+    const { tileH, tileW, hoveredTile, finished } = this
     const { width, height } = ctx.canvas
 
     ctx.clearRect( 0, 0, width, height )
 
-    if (hoveredTile) {
+    if (!finished && hoveredTile) {
       ctx.fillStyle = `#fff1`
       ctx.fillRect( hoveredTile.x * tileW, hoveredTile.y * tileH, tileW, tileH )
     }
@@ -184,7 +185,7 @@ export default class Game {
     const tile = this.hoveredTile
 
     if (!tile || tile.shape) return
-    if (this.shape && this.turnOf !== this.shape) return
+    if (this.finished || (this.shape && this.turnOf !== this.shape)) return
 
     // tile.shape = this.shape ?? (Math.random() > 0.5 ? `cross` : `circle`)
 
@@ -201,11 +202,40 @@ export default class Game {
   setTileShape = (x:number, y:number, shape?:Shape) => {
     const tile = this.getTile( x, y )
 
-    if (!tile) return
+    if (tile) {
+      const shapeOnTile = shape ?? this.turnOf
 
-    const shapeOnTile = shape ?? this.turnOf
+      if (shapeOnTile) tile.shape = shapeOnTile
+    }
 
-    if (shapeOnTile) tile.shape = shapeOnTile
+    if (this.checkEnd()) {
+      console.log( `end` )
+      this.finished = true
+    }
+  }
+
+
+  getCanvas = () => {
+    return this.#ctx.canvas
+  }
+
+
+  replaceCanvas = (canvas:HTMLCanvasElement) => {
+    this.#ctx = canvas.getContext( `2d` )!
+  }
+
+
+  checkEnd = () => {
+    const mapStr = this.#data.map( tiles => tiles.map( t => t.shape ? (t.shape === `circle` ? `O` : `X`) : `.` ) ).map( row => row.join( `` ) ).join( `|` )
+
+    return !mapStr.includes( `.` ) ? `.` : [ `X`, `O` ].find( char => false
+      || mapStr.includes( char + char + char )
+      || (mapStr[ 0 ] === char && mapStr[ 4 ] === char && mapStr[ 8 ] === char)
+      || (mapStr[ 1 ] === char && mapStr[ 5 ] === char && mapStr[ 9 ] === char)
+      || (mapStr[ 2 ] === char && mapStr[ 6 ] === char && mapStr[ 10 ] === char)
+      || (mapStr[ 0 ] === char && mapStr[ 5 ] === char && mapStr[ 10 ] === char)
+      || (mapStr[ 2 ] === char && mapStr[ 5 ] === char && mapStr[ 8 ] === char),
+    )
   }
 
 
