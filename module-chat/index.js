@@ -3,7 +3,9 @@ import dotenv from "dotenv"
 import prismaPkg from "@prisma/client"
 
 const prisma = new prismaPkg.PrismaClient()
-const env = dotenv.config().parsed
+const env = dotenv.config().parsed ?? process.env
+
+console.log(process.env)
 
 const wss = new WebSocketServer({
   port: env.PORT,

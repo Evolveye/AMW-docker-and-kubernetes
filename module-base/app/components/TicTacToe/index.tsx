@@ -5,6 +5,7 @@ import { cn } from "app/core/functions/createClassName"
 import Link from "app/core/components/Link"
 import Game from "./logic"
 import classes from "./.module.css"
+import useFetch from "app/core/hooks/useFetch"
 
 const WS_URL = process.env.CHAT_URL ?? ``
 
@@ -17,13 +18,18 @@ export type InitialData = {
   turn: "circle" | "cross" | null
   map: string
 }
+export type ApiWsRes = {
+  success: "success" | "error"
+  wsUrl: string
+}
 
 export default function TicTacToe({ className, gameId }:TicTacToeProps) {
   const gameRef = useRef<Game>()
   const [ finished, setFinished ] = useState<boolean>( false )
   const [ error, setError ] = useState<boolean>( false )
   const [ initialData, setInitialData ] = useState<InitialData | null>( null )
-  const ws = useWS( WS_URL, {
+  const wsUrlRes = useFetch<ApiWsRes>( `GET`, `/api/ws` )
+  const ws = useWS( wsUrlRes?.wsUrl ?? ``, {
     "onError"() {
       setError( true )
     },
@@ -75,7 +81,7 @@ export default function TicTacToe({ className, gameId }:TicTacToeProps) {
     ws?.emit( `join to the game`, gameId )
 
     return () => gameRef.current?.destroy()
-  }, [ gameId ] )
+  }, [ gameId, wsUrlRes?.wsUrl ] )
 
   return (
     <article className={cn( classes.ticTacToe, className )}>

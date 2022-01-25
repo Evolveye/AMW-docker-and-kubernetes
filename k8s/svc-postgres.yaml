@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: postgres
+  name: projekt-svc-postgres
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+    name: postgres
+    targetPort: 5432
+  selector:
+    app: postgres
+  type: NodePort
+status:
+  loadBalancer: {}

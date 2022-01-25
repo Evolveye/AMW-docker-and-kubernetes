@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: projekt-cm-module-base
+data:
+  OWNER_SERVICE_URL: http://35.226.127.173:25600/
+  POSTGRES_URL: postgres://user:password@projekt-svc-postgres/docker-and-k8s
+  CHAT_URL: ws://projekt-rte-ws-labproj21.apps.ocp.lab.cloudpak.site

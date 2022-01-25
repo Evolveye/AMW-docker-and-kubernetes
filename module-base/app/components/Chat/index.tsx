@@ -3,11 +3,14 @@ import useWS from "app/core/hooks/useWS"
 import { useStaeArray } from "app/core/hooks/useStateArray"
 import { cn } from "app/core/functions/createClassName"
 import classes from "./.module.css"
-
-const WS_URL = process.env.CHAT_URL ?? ``
+import useFetch from "app/core/hooks/useFetch"
 
 export type ChatProps = {
   className?: string
+}
+export type ApiWsRes = {
+  success: "success" | "error"
+  wsUrl: string
 }
 
 const Message = ({ data }) => (
@@ -17,8 +20,9 @@ const Message = ({ data }) => (
 )
 
 export default function Chat({ className }:ChatProps) {
+  const wsUrlRes = useFetch<ApiWsRes>( `GET`, `/api/ws` )
   const [ messages, messagesActions ] = useStaeArray()
-  const ws = useWS( WS_URL, {
+  const ws = useWS( wsUrlRes?.wsUrl ?? ``, {
     message: msg => messagesActions.push( msg ),
   } )
 

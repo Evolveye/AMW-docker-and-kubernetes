@@ -8,5 +8,6 @@ RUN npm install
 EXPOSE 25600
 
 RUN npx blitz build
+RUN chmod +x ./cmd.sh
 
-CMD npx blitz start -p 25600
+CMD ./cmd.sh

@@ -8,6 +8,13 @@ export type GameModesChooserProps = {
   className?: string
 }
 
+export type ApiGamesRes = {
+  state: "success" | "error"
+  game: {
+    uuid: string
+  }
+}
+
 export default function GameModesChooser({ className }:GameModesChooserProps) {
   return (
     <article className={cn( classes.gameModesChooser, className )}>
@@ -19,8 +26,12 @@ export default function GameModesChooser({ className }:GameModesChooserProps) {
 }
 
 
-function runGame( type:GameMode ) {
+async function runGame( type:GameMode ) {
   if (type === `pc`) return redirect( `/game` )
 
-  http.post( `/api/games`, { type } ).then( r => redirect( `/game/${r.game.uuid}` ) )
+  const gameRes:ApiGamesRes = await http.post( `/api/games`, { type } )
+
+  if (gameRes.state === `error`) return alert( `Błąd Tworzenia gry. Spróbuj ponownie później` )
+
+  return redirect( `/game/${gameRes.game.uuid}` )
 }

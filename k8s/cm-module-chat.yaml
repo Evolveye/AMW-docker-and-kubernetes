@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: projekt-cm-module-chat
+data:
+  PORT: "25601"
+  POSTGRES_URL: postgres://user:password@projekt-svc-postgres/postgres

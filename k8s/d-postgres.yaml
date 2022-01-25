@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: postgres
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/labproj21/postgres:10.5
+        name: postgres
+        ports:
+        - containerPort: 5432
+        resources: {}
+        volumeMounts:
+        - mountPath: /app/postgres
+          name: projekt-volume
+        envFrom:
+        - configMapRef:
+            name: projekt-cm-postgres
+      volumes:
+      - name: projekt-volume
+        persistentVolumeClaim:
+          claimName: projekt-pvc-postgres
+status: {}

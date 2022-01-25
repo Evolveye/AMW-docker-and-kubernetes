@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: projekt-cm-postgres
+data:
+  # POSTGRES_DB: docker-and-k8s
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: password

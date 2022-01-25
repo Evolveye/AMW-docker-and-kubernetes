@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: null
+  labels:
+    app: module-base
+  name: projekt-rte-http
+spec:
+  host: ""
+  port:
+    targetPort: http
+  to:
+    kind: ""
+    name: projekt-svc-module-base
+    weight: null
+status:

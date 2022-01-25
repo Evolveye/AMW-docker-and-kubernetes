@@ -1,4 +1,8 @@
 name="module-base"
 tag="0.0.1"
 
-docker build -t "$name:$tag" .
+reldir=`dirname $0`
+cd $reldir
+scriptDir=`pwd`
+
+docker build -t "$name:$tag" $scriptDir

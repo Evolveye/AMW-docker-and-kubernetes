@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: module-chat
+  name: module-chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: module-chat
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: module-chat
+    spec:
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/labproj21/module-chat:0.0.1
+        imagePullPolicy: Always  #  DEBUG ONLY
+        name: module-chat
+        ports:
+        - containerPort: 25601
+        resources: {}
+        envFrom:
+        - configMapRef:
+            name: projekt-cm-module-chat
+status: {}

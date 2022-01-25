@@ -3,6 +3,8 @@ import { z } from "zod"
 import db from "db"
 import { BlitzApiRequest, BlitzApiResponse } from "blitz"
 
+const POSTGRES_URL = process.env.POSTGRES_URL 
+
 const gameStates = [ `active`, `finished` ]
 const gameTypes = [ `pc`, `friend`, `random` ]
 const PostReqData = z.object({
@@ -58,15 +60,22 @@ async function onGet( req:BlitzApiRequest, res:BlitzApiResponse ) {
   let state = gameStates.includes( anyState ) ? anyState : undefined
   let type = gameTypes.includes( anyType ) ? anyType : undefined
 
-  const games = await db.game.findMany({ where:{ state, type } }).catch( () => null )
+  const games = await db.game.findMany({ where:{ state, type } }).catch( err => new Error( err ) )
 
-  if (games === null) {
+  if (games instanceof Error) {
     const err = {
       state: `error`,
       message: `Cannot load data`,
     }
 
-    console.log({ ...err, log:`Error with querying from database` })
+    console.log({
+      ...err,
+      logData: {
+        message: `Error with querying from database`,
+        POSTGRES_URL,
+        error: games
+      },
+    })
     return res.json( err )
   }
 

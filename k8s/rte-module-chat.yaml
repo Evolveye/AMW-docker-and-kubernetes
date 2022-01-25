@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: null
+  labels:
+    app: module-chat
+  name: projekt-rte-ws
+spec:
+  host: ""
+  port:
+    targetPort: ws
+  to:
+    kind: ""
+    name: projekt-svc-module-chat
+    weight: null
+status:
