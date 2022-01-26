@@ -5,4 +5,4 @@ metadata:
   name: projekt-cm-module-chat
 data:
   PORT: "25601"
-  POSTGRES_URL: postgres://user:password@projekt-svc-postgres/postgres
+  POSTGRES_URL: postgres://user:password@projekt-svc-postgres/docker-and-k8s
